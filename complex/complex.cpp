@@ -3,6 +3,7 @@
 
 using namespace std;
 
+//Complex
 Complex::Complex(){
   _x = 0;
   _y = 0;
@@ -26,7 +27,19 @@ float Complex::module(){
 }
 
 
-std::ostream &operator << (std::ostream &s, Complex &z){
+std::ostream &operator << (std::ostream &s, Complex z){
         s << z._x << "+" << z._y << "i";
         return s;
+}
+
+Complex Complex::operator + (Complex z2){
+  return Complex(_x+z2.real(), _y+z2.imag());
+}
+
+Complex Complex::operator - (Complex z2){
+  return Complex(_x-z2.real(), _y-z2.imag());
+}
+
+Complex Complex::operator * (Complex z2){
+  return Complex(pow(_x,2)-pow(z2.imag(),2), _y*z2.real() + _x*z2.imag());
 }

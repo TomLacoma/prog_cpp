@@ -14,5 +14,9 @@ class Complex{
     float imag();
     float module();
 
-    friend std::ostream & operator << (std::ostream & s, Complex & z);
+    friend std::ostream &operator << (std::ostream &s, Complex z);
+
+    Complex operator + (Complex);
+    Complex operator * (Complex);
+    Complex operator - (Complex);
 };
