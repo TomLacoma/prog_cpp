@@ -1,5 +1,6 @@
 #include "tableau.h"
 #include <cstring>
+#include <cassert>
 
 using namespace std;
 
@@ -38,11 +39,18 @@ void Tableau::operator = (const Tableau &aux){ //Surcharge de l'opérateur = (as
   }
 }
 
+void Tableau::write(double data, int index){
+  _data[index] = data;
+}
 
+double Tableau::operator [] (int index){
+  assert(index>0 && index<_len);
+  return _data[index];
+}
 
 std::ostream &operator << (std::ostream &s, Tableau &t){ //Surcharge du << pour tableaux
   for(int i=0; i<t._len; i++){
-    s << t._data[i] << " " << i << " ";
+    s << t._data[i] << " ";
   }
   s << endl;
   return s;
@@ -58,14 +66,14 @@ void dump(Tableau t){ //equivalent du cout << Tableau mais en externe à la fonc
 
 
 //Matrix
-Matrix::Matrix(int n, int m){
+Matrix::Matrix(int n, int m){//création d'une matrice à n lignes et m colonnes
   _n = n;
   _m = m;
   _data = new double* [n];
   for(int i=0; i<_n; i++){
     _data[i] = new double [m];
   }
-  cout << "Created matrix " << n << "*" << m << " with address" << &_data << endl;
+  cout << "Created matrix " << n << "*" << m << " with address " << &_data << endl;
 }
 
 Matrix::~Matrix(){
@@ -96,7 +104,16 @@ void Matrix::fill_id(){
   }
 }
 
-std::ostream &operator << (std::ostream &s, Matrix &mat){ //Surcharge du << pour tableaux
+void Matrix::zero_out(){
+  for(int i=0; i<_n; i++){
+    for(int j=0; j<_m; j++){
+      _data[i][j] = 0;
+      }
+    }
+  }
+
+
+std::ostream &operator << (std::ostream &s, Matrix &mat){ //Surcharge du << pour matrices
   for(int i=0; i<mat._n; i++){
     for(int j=0; j<mat._m; j++){
         s << mat._data[i][j] << " ";
@@ -114,10 +131,11 @@ void Matrix::operator = (const Matrix &mat){
   if(this!=&mat){
     if(_data!=NULL){
       delete[] _data;
+      //cout << "Overwrite" << endl;
     }
     _n = mat._n;
     _m = mat._m;
-    _data = new double* [_n]; 
+    _data = new double* [_n];
     for(int i=0; i<_n; i++){
       _data[i] = new double [_m];
     }
@@ -130,7 +148,120 @@ Matrix Matrix::operator + (Matrix &mat){
   for(int i=0; i<mat._n; i++){
     for(int j=0; j<mat._m; j++){
         tmpMat[i][j] = _data[i][j] + mat._data[i][j];
+        //cout << mat._data[i][j] << " " << i << " " << j << endl;
     }
   }
   return tmpMat;
+}
+
+Matrix Matrix::operator - (Matrix &mat){
+  Matrix tmpMat(_n,_m);
+  for(int i=0; i<mat._n; i++){
+    for(int j=0; j<mat._m; j++){
+        tmpMat[i][j] = _data[i][j] - mat._data[i][j];
+        //cout << mat._data[i][j] << " " << i << " " << j << endl;
+    }
+  }
+  return tmpMat;
+}
+
+Matrix Matrix::operator * (double scal){
+  Matrix tmpMat(_n,_m);
+  for(int i=0; i<_n; i++){
+    for(int j=0; j<_m; j++){
+        tmpMat[i][j] = _data[i][j] * scal;
+        //cout << mat._data[i][j] << " " << i << " " << j << endl;
+    }
+  }
+  return tmpMat;
+}
+
+Matrix Matrix::operator * (Matrix &mat){ //buggué
+  assert(_m==mat._n);
+  Matrix tmpMat(_n,mat._m);
+  for(int i=0; i<_n; i++){
+    for(int j=0; j<mat._m; j++){
+        for(int k=0; k<_m; k++){
+          tmpMat[i][j] += _data[i][k]*mat._data[k][j];
+        }
+    }
+
+  }
+
+  return tmpMat;
+}
+
+Matrix operator * (double scal, Matrix &mat){
+
+  Matrix tmpMat(mat._n,mat._m);
+  for(int i=0; i<mat._n; i++){
+    for(int j=0; j<mat._m; j++){
+        tmpMat[i][j] = mat._data[i][j] * scal;
+        //cout << mat._data[i][j] << " " << i << " " << j << endl;
+    }
+  }
+  return tmpMat;
+}
+
+void Matrix::randomize(){
+  for(int i=0; i<_n;i++){
+    for(int j=0; j<_m;j++){
+      _data[i][j] = random()%10;
+    }
+  }
+}
+
+void Matrix::write(double data, int n, int m){
+    //assert(n<_n && n>0 && m<_m && m>0);
+    _data[n][m] = data;
+}
+
+void Matrix::operator += (Matrix &mat){
+  *this = *this + mat;
+}
+
+void Matrix::operator -= (Matrix &mat){
+  *this = *this - mat;
+}
+
+void Matrix::operator *= (Matrix &mat){
+  *this = *this * mat;
+}
+
+void Matrix::operator *= (double l){
+  *this = *this * l;
+}
+
+void Matrix::cFlip(int c1, int c2){//flips columns c1 and c2
+  double tmp;
+  for(int i=0; i<_n; i++){
+    tmp = _data[i][c1];
+    this->write(_data[i][c2], i, c1);
+    this->write(tmp, i, c2);
+  }
+}
+
+void Matrix::lFlip(int l1, int l2){ //flips lines l1 and l2
+  double tmp;
+  for(int j=0; j<_m; j++){
+    tmp = _data[l1][j];
+    this->write(_data[l2][j], l1, j);
+    this->write(tmp, l2, j);
+  }
+}
+
+Tableau Matrix::line(int l){
+  Tableau tmpTab(_m);
+  for(int i=0; i<_m; i++){
+  tmpTab.write(_data[l][i], i);
+  }
+  return tmpTab;
+}
+
+Tableau Matrix::column(int c){
+  Tableau tmpTab(_n);
+  for(int j=0; j<_n; j++){
+  tmpTab.write(_data[j][c], j);
+  }
+  return tmpTab;
 }

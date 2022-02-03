@@ -12,19 +12,21 @@ int main(){
 */
 /*
   Tableau tab(5);
-  cout << tab;
+  Tableau tab2(5);
+  tab2 = tab;
+  cout << tab << endl << tab2 << endl;
   dump(tab);
 */
 
+
   Matrix mat(3,3);
   mat.fill_id();
-  Matrix mat2(3,3);
-  mat.fill_id();
+  cout<<mat<<endl;
+  mat.cFlip(1,2);
+  cout<<mat<<endl;
+  mat*=2;
   cout << mat;
-  
-  Matrix mat3(3,3);
-  mat3 = mat + mat2;
-  cout << mat3;
-
+  Tableau tmp = mat.column(1);
+  cout << tmp;
   return 0;
 }

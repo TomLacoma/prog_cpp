@@ -17,7 +17,11 @@ class Tableau{
 
   friend std::ostream &operator << (std::ostream &s, Tableau &t);
 
+  void write(double, int);
+
   void operator = (const Tableau&);
+  double operator [] (int);
+
 };
 
 void dump(Tableau);
@@ -39,9 +43,26 @@ public:
   Matrix operator + (Matrix&);
   Matrix operator - (Matrix&);
   Matrix operator * (Matrix&);
+  Matrix operator * (double);
   double* operator [] (int);
+
+  void operator += (Matrix&);
+  void operator -= (Matrix&);
+  void operator *= (Matrix&);
+  void operator *= (double);
 
   void operator = (const Matrix&);
 
+  void write(double data, int n, int m);
+
   void fill_id();
+  void zero_out();
+  void randomize();
+  void lFlip(int, int);
+  void cFlip(int, int);
+
+  Tableau line(int);
+  Tableau column(int);
 };
+
+Matrix operator * (double, Matrix&);
