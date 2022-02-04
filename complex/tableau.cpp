@@ -12,14 +12,14 @@ Tableau::Tableau(int n){
     _data[i] = random()%100;
   }
 
-  cout << "Created object of size " << _len << " and adress " << _data << endl;
+  //cout << "Created object of size " << _len << " and adress " << _data << endl;
 
 }
 
 Tableau::~Tableau(){
   //cout << "Rickrolled " << _data << endl;
   delete [] _data;
-  cout << "Freed " << _data << endl;
+  //cout << "Freed " << _data << endl;
 }
 
 Tableau::Tableau(const Tableau &aux){ //Constructeur de recopie, important pour la duplication propre des objets (pointeurs)
@@ -73,12 +73,22 @@ Matrix::Matrix(int n, int m){//création d'une matrice à n lignes et m colonnes
   for(int i=0; i<_n; i++){
     _data[i] = new double [m];
   }
-  cout << "Created matrix " << n << "*" << m << " with address " << &_data << endl;
+  //cout << "Created matrix " << n << "*" << m << " with address " << &_data << endl;
+}
+
+Matrix::Matrix(int n){//création d'une matrice à n lignes et m colonnes
+  _n = n;
+  _m = n;
+  _data = new double* [n];
+  for(int i=0; i<_n; i++){
+    _data[i] = new double [n];
+  }
+  //cout << "Created matrix " << n << "*" << m << " with address " << &_data << endl;
 }
 
 Matrix::~Matrix(){
   delete[] _data;
-  cout << "Freed " << &_data << endl;
+  //cout << "Freed " << &_data << endl;
 }
 
 Matrix::Matrix(const Matrix &aux){
@@ -176,7 +186,7 @@ Matrix Matrix::operator * (double scal){
   return tmpMat;
 }
 
-Matrix Matrix::operator * (Matrix &mat){ //buggué
+Matrix Matrix::operator * (Matrix &mat){
   assert(_m==mat._n);
   Matrix tmpMat(_n,mat._m);
   for(int i=0; i<_n; i++){
@@ -264,4 +274,15 @@ Tableau Matrix::column(int c){
   tmpTab.write(_data[j][c], j);
   }
   return tmpTab;
+}
+
+void Matrix::produit(Matrix &A, Matrix &B){
+  assert(A._m==B._n);
+  for(int i=0; i<A._n; i++){
+    for(int j=0; j<B._m; j++){
+      for(int k=0; k<A._m; k++){
+        _data[i][j] += A._data[i][k]*B._data[k][j];
+      }
+    }
+  }
 }

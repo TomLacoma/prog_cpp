@@ -36,7 +36,10 @@ public:
   Matrix();
   ~Matrix();
   Matrix(int, int);
+  Matrix(int);
   Matrix(const Matrix&);
+
+  void produit(Matrix&, Matrix&);
 
   friend std::ostream &operator << (std::ostream &s, Matrix &mat);
 
