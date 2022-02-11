@@ -40,6 +40,8 @@ public:
   Matrix(const Matrix&);
 
   void produit(Matrix&, Matrix&);
+  void prod_ligne(Matrix&, Matrix&, int);
+
 
   friend std::ostream &operator << (std::ostream &s, Matrix &mat);
 
@@ -48,7 +50,6 @@ public:
   Matrix operator * (Matrix&);
   Matrix operator * (double);
   double* operator [] (int);
-
   void operator += (Matrix&);
   void operator -= (Matrix&);
   void operator *= (Matrix&);

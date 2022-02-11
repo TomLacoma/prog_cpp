@@ -1,10 +1,10 @@
 #!/bin/bash
 rm toto.txt
-N=100
-while [ "$N" != "1000" ]
+N=10
+while [ "$N" != "100" ]
 do 
 	TPS=`./main $N`
 	echo $N $TPS >> toto.txt
 	echo $N $TPS
-	N=`expr $N + 10`
+	N=`expr $N + 1`
 done

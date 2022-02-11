@@ -1,6 +1,7 @@
 #include "tableau.h"
 #include <cstring>
 #include <cassert>
+#include <pthread.h>
 
 using namespace std;
 
@@ -9,7 +10,7 @@ Tableau::Tableau(int n){
   _data = new int [n];
 
   for(int i=0; i<n;i++){
-    _data[i] = random()%100;
+    _data[i] = 0;
   }
 
   //cout << "Created object of size " << _len << " and adress " << _data << endl;
@@ -274,6 +275,16 @@ Tableau Matrix::column(int c){
   tmpTab.write(_data[j][c], j);
   }
   return tmpTab;
+}
+
+
+void Matrix::prod_ligne(Matrix &A, Matrix &B, int i){ //Calcule la ligne i du produit des matrices A et B, et les écrit dans la matrice &this
+  assert(A._m==B._n);
+  for(int j=0; j<B._m; j++){
+    for(int k=0; k<A._m; k++){
+      _data[i][j] += A._data[i][k]*B._data[k][j];
+    }
+  }
 }
 
 void Matrix::produit(Matrix &A, Matrix &B){
