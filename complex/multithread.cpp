@@ -7,6 +7,7 @@
 
 void* start_routine(void* obj){
   MatrixBlock* arg = (MatrixBlock*) obj;
+  std::cout << "test* " << arg->_start_line << '\n';
   for(int i=arg->_start_line; i<arg->_stop_line; i++){
     for(int j=0; j<arg->_b->_m; j++){
       for(int k=0; k<arg->_a->_m; k++){

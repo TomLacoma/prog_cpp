@@ -45,7 +45,7 @@ void Tableau::write(double data, int index){
 }
 
 double Tableau::operator [] (int index){
-  assert(index>0 && index<_len);
+  assert(index>=0 && index<_len);
   return _data[index];
 }
 
