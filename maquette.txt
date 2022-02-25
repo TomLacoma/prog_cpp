@@ -1,0 +1,39 @@
+SERV
+for i in lignes:
+  envoyer "ligne:{valeur1;valeur2,...,valeur_n}"
+
+client
+char buffer
+  recevoir "ligne:{valeur1;valeur2,...,valeur_n}"
+
+buffer.split(":")
+
+"ligne\:\{(?:(\d+)\;)+\}"
+--> ["valeur1", "valeur2",...]
+Pour B:
+"coucou c'est le début de la matrice"
+"n1\tn2\t...n_p\n"
+"coucou c'est la fin de la matrice"
+
+Pour A:
+"matrice A, ligne i"
+des trucs
+"matrice A, ligne j"
+
+ex: "A:<numéro de ligne>{i_1, i_2, ..., i_n}\n"
+--
+
+Client :
+  Demande de co au serveur
+  -->socket
+    |__> envoyer les données des matrices (C=A*B, lignes [i,j[) => envoyer B entière, A (lignes [i,j[), i et j
+    --Signal de départ de calcul
+
+    --Attendre
+
+Serveur:
+Recevoir données matrice (txt, int)
+ -->reconstruire B, A[i,j[
+ -->faire le calcul de C[i,j[
+ -->renvoyer C
+ -->mourir

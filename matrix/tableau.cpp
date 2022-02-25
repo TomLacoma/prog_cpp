@@ -72,6 +72,9 @@ Matrix::Matrix(int n, int m){//création d'une matrice à n lignes et m colonnes
   _data = new double* [n];
   for(int i=0; i<_n; i++){
     _data[i] = new double [m];
+    for(int j=0; j<_m; j++){
+      _data[i][j] = 0;
+    }
   }
   //cout << "Created matrix " << n << "*" << m << " with address " << &_data << endl;
 }
@@ -82,6 +85,9 @@ Matrix::Matrix(int n){//création d'une matrice à n lignes et m colonnes
   _data = new double* [n];
   for(int i=0; i<_n; i++){
     _data[i] = new double [n];
+    for(int j=0; j<_m; j++){
+      _data[i][j] = 0;
+    }
   }
   //cout << "Created matrix " << n << "*" << m << " with address " << &_data << endl;
 }
@@ -89,6 +95,16 @@ Matrix::Matrix(int n){//création d'une matrice à n lignes et m colonnes
 Matrix::~Matrix(){
   delete[] _data;
   //cout << "Freed " << &_data << endl;
+}
+
+int Matrix::send_line (int s, int l) {
+    ssize_t size = _n * sizeof(double);
+    return size == write(s, _data[l], size);
+}
+
+int Matrix::recv_line (int s, int l) {
+    ssize_t size = _n * sizeof(double);
+    return size == read(s, _data[l], size);
 }
 
 Matrix::Matrix(const Matrix &aux){
@@ -288,7 +304,7 @@ Tableau Matrix::column(int c){
 }
 
 Matrix Matrix::lines(int i, int j){ //Renvoie la sous matrice des lignes [i,j[ de &this
-  assert(j>i && i>=0 && j<=_m);
+  assert(j>i && i>=0 && j<=_n);
   Matrix tmpMat(j-i, _m);
   for(int _i=i; _i<j; _i++){
     for(int _j=0; _j<_m; _j++){
@@ -324,6 +340,6 @@ void* Matrix::toPtr(){
 }
 
 int Matrix::send(int f, int i, int j){//Envoie les lignes [i,j[ de la matrice sur le socket f
-  int ret = write(f, this->lines(i,j).toPtr(), sizeof(this->lines(i,j)));
+  int ret = write(f, this->lines(i,j).toPtr(), sizeof(Matrix));
   return ret;
 }

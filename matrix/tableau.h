@@ -1,5 +1,9 @@
 #pragma once
 #include <iostream>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <cstring>
+#include <unistd.h>
 
 using namespace std;
 
@@ -11,6 +15,7 @@ class Tableau{
   ~Tableau();
   Tableau(int);
   Tableau(const Tableau&);
+  Tableau(string);
 
   int _len;
   int* _data;
@@ -23,6 +28,7 @@ class Tableau{
   double operator [] (int);
 
 };
+
 
 void dump(Tableau);
 
@@ -42,6 +48,8 @@ public:
   void produit(Matrix&, Matrix&);
   void prod_ligne(Matrix&, Matrix&, int);
 
+  int send(int, int, int); //Envoie la matrice M[i,j[ sur le réseau (ou la formate)
+  void receive();
 
   friend std::ostream &operator << (std::ostream &s, Matrix &mat);
 
@@ -57,7 +65,7 @@ public:
 
   void operator = (const Matrix&);
 
-  void write(double data, int n, int m);
+  void fill(double data, int n, int m);
 
   void fill_id();
   void zero_out();
@@ -65,7 +73,15 @@ public:
   void lFlip(int, int);
   void cFlip(int, int);
 
+  void* toPtr();
+
+  int send_line(int, int);
+  int send_block(int, int, int);
+  int recv_line(int, int);
+
   Tableau line(int);
+  Matrix lines(int, int);
+  string lineToStr(int);
   Tableau column(int);
 };
 

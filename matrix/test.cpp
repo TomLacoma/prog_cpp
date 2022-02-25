@@ -17,11 +17,12 @@ int main(int argc, char** argv){
   A.randomize();
 
   cout << A << endl;
-  
 
   Matrix B(10, 7);
-  B = A.lines(0,6);
-  cout << B;
+  B = A.lines(0,10);
+  cout << B << endl << sizeof(Matrix) << endl;
+  cout << B.toPtr() << endl << sizeof(B.toPtr()) << endl;
+
 
 
   return 0;
