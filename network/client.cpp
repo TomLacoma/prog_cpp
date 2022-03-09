@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "../matrix/multithread.h"
 #include "../matrix/tableau.h"
+#include "mat_network.h"
 
 #define SIZE 10
 
@@ -57,12 +58,17 @@ int main (int argc, char * argv[])
     A.randomize();
     Matrix B(SIZE);
     B.randomize();
+    Matrix C(A._m, B._n);
 
     int i=2,j=5;
     A.send_block(s, i, j);
-    std::cout << "Sent " << j-i << " lines of "<< endl << A << endl;
-    B.send_block(s, B._n, B._m);
-    cout << B <<endl;
+    //std::cout << "Sent " << j-i << " lines of "<< endl << A << endl;
+
+    B.send_block(s, 0, B._n);
+    //std::cout << "Sent " << B._n << " lines of "<< endl << B << endl;
+
+    C = recv_block(s);
+    cout << C << endl;
 
 
 

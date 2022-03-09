@@ -26,22 +26,38 @@ void * hconnect (void * fd)
 	r = read(f, &j, sizeof(j)); //indice ligne fin
   assert(r!=-1);
 
-	std::cout << n << "\t" << m << "\t" << i << "\t" << j << "\t" << '\n';
+	//std::cout << n << "\t" << m << "\t" << i << "\t" << j << "\t" << "\n";
 
   Matrix A(n,m);
 
   for(int _i=i; _i<j; _i++){
-		std::cout << "Receiving line "<< _i << '\n';
+		//std::cout << "Receiving line "<< _i << " of A\n";
     A.recv_line(f, _i);
   }
 
-	std::cout << "coucou" << '\n';
+	//std::cout << "coucou" << '\n';
 
+	r = read(f, &n, sizeof(n)); //n lignes
+	r = read(f, &m, sizeof(m)); // n col
+	r = read(f, &i, sizeof(i)); // indice ligne début
+	r = read(f, &j, sizeof(j)); //indice ligne fin
+  assert(r!=-1);
+
+  Matrix B(n,m);
+	//std::cout << n << "\t" << m << "\t" << i << "\t" << j << "\t" << "\n";
+  for(int _i=i; _i<j; _i++){
+		//std::cout << "Receiving line "<< _i << "of B\n";
+    B.recv_line(f, _i);
+  }
+
+	//std::cout << "coucouB" << '\n';
+
+/*
 	Matrix B;
 	B = recv_block(f);//matrix B, full
-	std::cout << "coucou2" << '\n';
+	std::cout << "coucou2" << '\n';*/
 
-	cout << A << endl << B << endl;
+	cout << "Received :" << endl << A << endl << B << endl;
 
 	Matrix C(A._m, B._n);
 	for(int p=i; p<j; p++){
@@ -53,6 +69,9 @@ void * hconnect (void * fd)
   }
 
 	std::cout << C << '\n';
+
+	C.send_block(f, 0, C._n);
+	std::cout << "Sent matrix C" << '\n';
 
 	close(f);
 	std::cout << "Connection closed" << '\n';
